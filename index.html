@@ -1,0 +1,1403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MD Kaif Khan · Data Analyst</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=Rajdhani:wght@300;400;500;600;700&family=Inconsolata:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --obs:#060608;
+  --obs2:#0a0b0f;
+  --obs3:#0f1018;
+  --obs4:#141520;
+  --glass:rgba(255,255,255,0.04);
+  --glass2:rgba(255,255,255,0.07);
+  --glass3:rgba(255,255,255,0.02);
+  --gb:rgba(255,255,255,0.08);
+  --gb2:rgba(255,255,255,0.14);
+  --silk:#f8f6f2;
+  --silk2:#d4cfc7;
+  --silk3:#8a8680;
+  --silk4:#4a4844;
+  --rose:#c8a08a;
+  --rose2:#e8c4a8;
+  --rose3:rgba(200,160,138,0.15);
+  --jade:#7ab8a0;
+  --jade2:#9dd4bc;
+  --jade3:rgba(122,184,160,0.12);
+  --gold:#c8a840;
+  --gold2:#e8c860;
+  --gold3:rgba(200,168,64,0.12);
+  --indigo:#8090c8;
+  --indigo2:#a0b0e8;
+  --indigo3:rgba(128,144,200,0.12);
+  --blur:blur(24px) saturate(180%);
+  --cor:'Cormorant Garamond',serif;
+  --raj:'Rajdhani',sans-serif;
+  --inc:'Inconsolata',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--obs);
+  color:var(--silk);
+  font-family:var(--raj);
+  overflow-x:hidden;
+  cursor:none;
+}
+
+/* ── FLUID MESH BACKGROUND ── */
+#meshCanvas{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.7}
+
+/* ── GRAIN OVERLAY ── */
+body::after{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23g)' opacity='0.045'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:900;opacity:0.5;
+}
+
+/* ── MAGNETIC CURSOR ── */
+.mag-cursor{
+  width:16px;height:16px;
+  border-radius:50%;
+  background:var(--silk);
+  position:fixed;pointer-events:none;
+  z-index:9999;
+  transform:translate(-50%,-50%);
+  mix-blend-mode:difference;
+  transition:width 0.3s cubic-bezier(.175,.885,.32,1.275),
+             height 0.3s cubic-bezier(.175,.885,.32,1.275),
+             border-radius 0.3s;
+}
+.mag-cursor.expand{width:60px;height:60px;border-radius:50%}
+.mag-cursor.text-mode{width:4px;height:28px;border-radius:2px}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:500;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1.4rem 4rem;
+  background:rgba(6,6,8,0.6);
+  backdrop-filter:var(--blur);
+  -webkit-backdrop-filter:var(--blur);
+  border-bottom:1px solid var(--gb);
+  transition:padding 0.4s;
+}
+.nav-sig{
+  display:flex;flex-direction:column;
+  text-decoration:none;
+}
+.nav-sig-name{
+  font-family:var(--cor);font-size:1.3rem;font-weight:500;
+  color:var(--silk);letter-spacing:0.04em;line-height:1;
+  font-style:italic;
+}
+.nav-sig-role{
+  font-family:var(--inc);font-size:0.58rem;
+  color:var(--silk3);letter-spacing:0.2em;text-transform:uppercase;
+  margin-top:3px;
+}
+nav ul{display:flex;gap:2.5rem;list-style:none;align-items:center}
+.nav-lnk{
+  font-family:var(--raj);font-size:0.78rem;font-weight:500;
+  color:var(--silk3);text-decoration:none;letter-spacing:0.1em;
+  text-transform:uppercase;
+  position:relative;transition:color 0.3s;
+}
+.nav-lnk::after{
+  content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;
+  background:var(--silk);transition:width 0.3s cubic-bezier(.4,0,.2,1);
+}
+.nav-lnk:hover{color:var(--silk)}
+.nav-lnk:hover::after{width:100%}
+.nav-hire-btn{
+  font-family:var(--raj);font-size:0.72rem;font-weight:600;
+  letter-spacing:0.12em;text-transform:uppercase;
+  color:var(--obs)!important;
+  background:var(--silk);
+  padding:0.55rem 1.5rem;
+  border-radius:100px;
+  text-decoration:none;
+  transition:opacity 0.2s,transform 0.2s;
+  display:inline-block;
+}
+.nav-hire-btn:hover{opacity:0.85;transform:scale(0.97)}
+.nav-hire-btn::after{display:none!important}
+.nav-avail{
+  display:flex;align-items:center;gap:0.5rem;
+  font-family:var(--inc);font-size:0.6rem;
+  color:var(--jade2);letter-spacing:0.12em;
+}
+.nav-avail-dot{width:6px;height:6px;border-radius:50%;background:var(--jade2);animation:breathe 2.5s ease-in-out infinite}
+@keyframes breathe{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.7)}}
+
+/* ── HERO ── */
+#hero{
+  min-height:100vh;
+  display:grid;grid-template-columns:1fr 1fr;
+  position:relative;z-index:2;overflow:hidden;
+}
+.hero-l{
+  padding:10rem 4rem 6rem 6rem;
+  display:flex;flex-direction:column;justify-content:center;
+  position:relative;
+}
+.hero-r{
+  padding:10rem 5rem 6rem 4rem;
+  display:flex;flex-direction:column;justify-content:center;
+  border-left:1px solid var(--gb);
+  position:relative;
+}
+
+/* Floating glass blobs behind hero */
+.hero-blob{
+  position:absolute;border-radius:50%;
+  filter:blur(60px);pointer-events:none;
+  animation:blobMorph 10s ease-in-out infinite alternate;
+}
+.hb1{width:400px;height:400px;background:radial-gradient(ellipse,rgba(200,160,138,0.12),transparent 70%);top:-80px;left:-80px;animation-delay:0s}
+.hb2{width:350px;height:350px;background:radial-gradient(ellipse,rgba(122,184,160,0.1),transparent 70%);bottom:50px;right:-60px;animation-delay:-3s}
+.hb3{width:280px;height:280px;background:radial-gradient(ellipse,rgba(128,144,200,0.09),transparent 70%);top:40%;right:30%;animation-delay:-6s}
+@keyframes blobMorph{
+  from{transform:scale(1) translate(0,0)}
+  to{transform:scale(1.15) translate(20px,15px)}
+}
+
+/* Hero Left — Text */
+.hero-eyebrow{
+  display:flex;align-items:center;gap:1rem;
+  font-family:var(--inc);font-size:0.62rem;
+  color:var(--rose2);letter-spacing:0.2em;text-transform:uppercase;
+  margin-bottom:2rem;
+  opacity:0;animation:silkIn 0.8s 0.3s cubic-bezier(.4,0,.2,1) forwards;
+}
+.eyebrow-rule{width:32px;height:1px;background:var(--rose)}
+
+.hero-name{
+  font-family:var(--cor);
+  font-size:clamp(4rem,7vw,6.5rem);
+  font-weight:300;
+  line-height:0.92;
+  letter-spacing:-0.01em;
+  color:var(--silk);
+  margin-bottom:0.5rem;
+  opacity:0;animation:silkIn 0.9s 0.5s cubic-bezier(.4,0,.2,1) forwards;
+}
+.hero-name-italic{font-style:italic;font-weight:300;color:var(--silk2)}
+.hero-name-bold{font-weight:700;color:var(--silk)}
+
+.hero-subtitle{
+  display:flex;align-items:center;gap:1rem;
+  font-family:var(--raj);font-size:0.78rem;font-weight:500;
+  letter-spacing:0.25em;text-transform:uppercase;
+  color:var(--silk3);
+  margin:1.5rem 0 2rem;
+  opacity:0;animation:silkIn 0.7s 0.7s cubic-bezier(.4,0,.2,1) forwards;
+}
+.sub-rule{flex:1;height:1px;background:linear-gradient(90deg,var(--gb2),transparent)}
+
+.hero-desc{
+  font-family:var(--cor);font-size:1.1rem;font-weight:300;
+  color:var(--silk2);line-height:1.9;max-width:440px;
+  margin-bottom:2.5rem;
+  opacity:0;animation:silkIn 0.8s 0.9s cubic-bezier(.4,0,.2,1) forwards;
+}
+.hero-desc strong{color:var(--silk);font-weight:600}
+.hero-desc em{color:var(--rose2);font-style:italic}
+
+.hero-ctas{
+  display:flex;gap:1rem;flex-wrap:wrap;
+  opacity:0;animation:silkIn 0.7s 1.1s cubic-bezier(.4,0,.2,1) forwards;
+}
+.cta-primary{
+  display:inline-flex;align-items:center;gap:0.6rem;
+  padding:0.9rem 2.2rem;
+  background:var(--silk);color:var(--obs);
+  font-family:var(--raj);font-size:0.72rem;font-weight:600;
+  letter-spacing:0.12em;text-transform:uppercase;text-decoration:none;
+  border-radius:100px;
+  transition:opacity 0.2s,transform 0.3s cubic-bezier(.175,.885,.32,1.275);
+  box-shadow:0 4px 30px rgba(248,246,242,0.15);
+}
+.cta-primary:hover{opacity:0.88;transform:scale(0.96) translateY(-1px)}
+.cta-ghost{
+  display:inline-flex;align-items:center;gap:0.6rem;
+  padding:0.9rem 2.2rem;
+  background:var(--glass2);color:var(--silk2);
+  font-family:var(--raj);font-size:0.72rem;font-weight:500;
+  letter-spacing:0.12em;text-transform:uppercase;text-decoration:none;
+  border-radius:100px;
+  border:1px solid var(--gb2);
+  backdrop-filter:var(--blur);
+  transition:background 0.3s,border-color 0.3s,transform 0.3s;
+}
+.cta-ghost:hover{background:var(--glass3);border-color:var(--gb);transform:scale(0.97)}
+
+@keyframes silkIn{
+  from{opacity:0;transform:translateY(24px);filter:blur(4px)}
+  to{opacity:1;transform:translateY(0);filter:blur(0)}
+}
+
+/* Hero Right — Glass Data Cards */
+.hero-data-cards{
+  display:flex;flex-direction:column;gap:1px;
+  opacity:0;animation:silkIn 0.9s 0.8s cubic-bezier(.4,0,.2,1) forwards;
+}
+.hdc{
+  padding:1.6rem 2rem;
+  background:var(--glass);
+  border:1px solid var(--gb);
+  backdrop-filter:var(--blur);
+  display:grid;grid-template-columns:1fr auto;
+  align-items:center;gap:1rem;
+  transition:background 0.3s,border-color 0.3s;
+  position:relative;overflow:hidden;
+}
+.hdc::before{
+  content:'';position:absolute;
+  top:0;left:0;width:0;height:100%;
+  background:linear-gradient(90deg,rgba(255,255,255,0.03),transparent);
+  transition:width 0.4s;
+}
+.hdc:hover::before{width:100%}
+.hdc:hover{background:var(--glass2);border-color:var(--gb2)}
+.hdc-label{
+  font-family:var(--inc);font-size:0.6rem;
+  color:var(--silk4);letter-spacing:0.15em;text-transform:uppercase;
+  margin-bottom:0.3rem;
+}
+.hdc-val{
+  font-family:var(--cor);font-size:1.05rem;font-weight:500;
+  color:var(--silk);
+}
+.hdc-num{
+  font-family:var(--cor);font-size:2.8rem;font-weight:700;
+  color:var(--silk);line-height:1;text-align:right;
+}
+.hdc-num-unit{font-size:1.1rem;font-weight:300;color:var(--silk3)}
+.hdc-bar{
+  height:1px;background:var(--gb2);
+  margin-top:0.8rem;grid-column:1/-1;
+  position:relative;
+}
+.hdc-bar-fill{
+  position:absolute;top:0;left:0;height:100%;
+  border-radius:1px;
+  animation:barFill 1.5s 1.5s ease forwards;
+  transform-origin:left;transform:scaleX(0);
+}
+@keyframes barFill{to{transform:scaleX(1)}}
+
+/* Hero contact strip */
+.hero-contact{
+  display:flex;gap:2rem;flex-wrap:wrap;
+  margin-top:2rem;
+  padding-top:2rem;
+  border-top:1px solid var(--gb);
+  opacity:0;animation:silkIn 0.7s 1.3s cubic-bezier(.4,0,.2,1) forwards;
+}
+.hc-item{
+  display:flex;flex-direction:column;gap:0.2rem;
+  text-decoration:none;
+  transition:opacity 0.2s;
+}
+.hc-item:hover{opacity:0.7}
+.hci-label{font-family:var(--inc);font-size:0.55rem;color:var(--silk4);letter-spacing:0.15em;text-transform:uppercase}
+.hci-val{font-family:var(--raj);font-size:0.8rem;color:var(--silk2);font-weight:500}
+
+/* ── SECTION SYSTEM ── */
+section{position:relative;z-index:2}
+.section-pad{padding:7rem 0}
+.container{max-width:1140px;margin:0 auto;padding:0 4rem}
+
+/* Ink reveal header */
+.ink-header{
+  display:flex;align-items:flex-end;gap:2rem;
+  margin-bottom:5rem;
+  opacity:0;transform:translateY(30px);
+  transition:opacity 0.8s cubic-bezier(.4,0,.2,1),transform 0.8s cubic-bezier(.4,0,.2,1);
+}
+.ink-header.vis{opacity:1;transform:translateY(0)}
+.ih-num{
+  font-family:var(--cor);font-size:5rem;font-weight:300;
+  color:var(--gb2);line-height:1;font-style:italic;
+  flex-shrink:0;
+}
+.ih-content{flex:1}
+.ih-label{
+  font-family:var(--inc);font-size:0.6rem;
+  color:var(--rose2);letter-spacing:0.2em;text-transform:uppercase;
+  margin-bottom:0.4rem;
+}
+.ih-title{
+  font-family:var(--cor);
+  font-size:clamp(2.5rem,4.5vw,4rem);
+  font-weight:300;color:var(--silk);
+  line-height:1;letter-spacing:-0.01em;
+}
+.ih-title em{font-style:italic;color:var(--silk2)}
+.ih-rule{width:100%;height:1px;background:var(--gb2);margin-top:1.2rem}
+.ih-sub{
+  font-family:var(--raj);font-size:0.78rem;
+  color:var(--silk4);letter-spacing:0.08em;
+  margin-top:0.5rem;font-weight:400;
+}
+
+/* ── GLASS PANELS ── */
+.glass-panel{
+  background:var(--glass);
+  border:1px solid var(--gb);
+  backdrop-filter:var(--blur);
+  -webkit-backdrop-filter:var(--blur);
+  border-radius:2px;
+  position:relative;
+  overflow:hidden;
+}
+.glass-panel::before{
+  content:'';position:absolute;
+  top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--gb2),transparent);
+}
+
+/* ── ABOUT ── */
+#about{background:linear-gradient(180deg,var(--obs) 0%,var(--obs2) 100%)}
+.about-layout{
+  display:grid;grid-template-columns:5fr 4fr;gap:4rem;
+  opacity:0;transform:translateY(30px);
+  transition:opacity 0.8s 0.1s cubic-bezier(.4,0,.2,1),transform 0.8s 0.1s cubic-bezier(.4,0,.2,1);
+}
+.about-layout.vis{opacity:1;transform:translateY(0)}
+
+.about-prose p{
+  font-family:var(--cor);font-size:1.1rem;font-weight:300;
+  color:var(--silk2);line-height:1.95;margin-bottom:1.1rem;
+}
+.about-prose p:first-child::first-letter{
+  font-family:var(--cor);font-size:4.5rem;font-weight:600;
+  float:left;line-height:0.75;margin-right:0.08em;margin-top:0.15em;
+  color:var(--rose2);
+}
+.about-prose strong{color:var(--silk);font-weight:600}
+.about-prose em{color:var(--rose2)}
+
+.profile-panel{display:flex;flex-direction:column;gap:0}
+.pp-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1rem 1.5rem;
+  border-bottom:1px solid var(--gb);
+  transition:background 0.2s;
+  gap:1rem;
+}
+.pp-row:first-child{border-top:1px solid var(--gb)}
+.pp-row:hover{background:var(--glass)}
+.pp-key{font-family:var(--inc);font-size:0.6rem;color:var(--silk4);letter-spacing:0.12em;text-transform:uppercase;flex-shrink:0}
+.pp-val{font-family:var(--raj);font-size:0.85rem;color:var(--silk2);font-weight:500;text-align:right}
+.pp-val.glow-rose{color:var(--rose2)}
+.pp-val.glow-jade{color:var(--jade2)}
+.pp-val.glow-gold{color:var(--gold2)}
+
+/* ── SKILLS ── */
+#skills{background:var(--obs2)}
+.skills-weave{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1px;background:var(--gb);
+  opacity:0;transform:translateY(30px);
+  transition:opacity 0.8s,transform 0.8s;
+}
+.skills-weave.vis{opacity:1;transform:translateY(0)}
+.sw-cell{
+  background:var(--obs2);padding:2.5rem 2rem;
+  transition:background 0.3s;
+  position:relative;
+}
+.sw-cell:hover{background:var(--obs3)}
+.sw-cell::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:transparent;transition:background 0.3s;
+}
+.sw-cell:hover::after{background:linear-gradient(90deg,transparent,var(--gb2),transparent)}
+
+.sw-icon{font-size:1.5rem;margin-bottom:1rem;display:block}
+.sw-title{
+  font-family:var(--cor);font-size:1.3rem;font-weight:600;
+  color:var(--silk);margin-bottom:0.3rem;line-height:1.1;
+}
+.sw-rule{width:24px;height:1px;margin-bottom:1.2rem}
+.sr-rose{background:var(--rose)}
+.sr-jade{background:var(--jade)}
+.sr-gold{background:var(--gold)}
+.sr-indigo{background:var(--indigo)}
+
+.sw-items{display:flex;flex-direction:column;gap:0.5rem}
+.sw-item{
+  display:flex;align-items:center;justify-content:space-between;
+  font-family:var(--raj);font-size:0.8rem;color:var(--silk3);
+  padding:0.35rem 0;border-bottom:1px solid rgba(255,255,255,0.04);
+  transition:color 0.2s;
+}
+.sw-cell:hover .sw-item{color:var(--silk2)}
+.sw-pips{display:flex;gap:3px}
+.pip{width:5px;height:5px;border-radius:50%;background:var(--gb2);transition:background 0.3s}
+.pip.on{background:var(--silk2)}
+.sw-cell:hover .pip.on{background:var(--silk)}
+
+/* ── EXPERIENCE ── */
+#experience{background:linear-gradient(180deg,var(--obs2) 0%,var(--obs3) 100%)}
+.exp-composition{
+  display:grid;grid-template-columns:280px 1fr;gap:0;
+  border:1px solid var(--gb);
+  opacity:0;transform:translateY(30px);
+  transition:opacity 0.8s,transform 0.8s;
+}
+.exp-composition.vis{opacity:1;transform:translateY(0)}
+.exp-left-col{
+  padding:3rem 2.5rem;border-right:1px solid var(--gb);
+  background:var(--glass3);
+  display:flex;flex-direction:column;gap:2rem;
+}
+.elc-section-label{font-family:var(--inc);font-size:0.58rem;color:var(--silk4);letter-spacing:0.18em;text-transform:uppercase;margin-bottom:0.6rem}
+.elc-company{
+  font-family:var(--cor);font-size:2rem;font-weight:600;
+  color:var(--silk);line-height:1.05;
+}
+.elc-role{
+  font-family:var(--raj);font-size:0.72rem;font-weight:600;
+  letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--rose2);margin-top:0.5rem;
+}
+.elc-badge{
+  display:inline-block;
+  background:var(--glass2);border:1px solid var(--gb2);
+  padding:0.35rem 0.9rem;border-radius:100px;
+  font-family:var(--inc);font-size:0.58rem;
+  color:var(--silk2);letter-spacing:0.1em;
+}
+.elc-metric{text-align:center;padding:1rem;background:var(--glass);border:1px solid var(--gb);border-radius:2px}
+.em-num{font-family:var(--cor);font-size:2.5rem;font-weight:700;color:var(--rose2);display:block;line-height:1}
+.em-lbl{font-family:var(--inc);font-size:0.58rem;color:var(--silk4);letter-spacing:0.1em;text-transform:uppercase;margin-top:0.3rem}
+.elc-tags{display:flex;flex-wrap:wrap;gap:0.4rem}
+.etag{
+  font-family:var(--inc);font-size:0.58rem;
+  color:var(--silk4);border:1px solid var(--gb);
+  padding:0.2rem 0.6rem;border-radius:100px;letter-spacing:0.06em;
+  transition:color 0.2s,border-color 0.2s;
+}
+.etag:hover{color:var(--silk2);border-color:var(--gb2)}
+
+.exp-right-col{padding:3rem}
+.exp-timeline{display:flex;flex-direction:column;gap:0}
+.et-item{
+  display:flex;gap:1.5rem;align-items:flex-start;
+  padding:1.4rem 0;border-bottom:1px solid var(--gb);
+}
+.et-item:last-child{border-bottom:none}
+.et-num{
+  font-family:var(--cor);font-size:2rem;font-weight:300;
+  color:var(--gb2);line-height:1;flex-shrink:0;
+  width:36px;text-align:right;margin-top:-4px;
+  font-style:italic;
+}
+.et-content{flex:1}
+.et-text{
+  font-family:var(--raj);font-size:0.9rem;font-weight:400;
+  color:var(--silk2);line-height:1.7;
+}
+.et-text strong{color:var(--silk);font-weight:600}
+.et-text .highlight{
+  color:var(--rose2);font-family:var(--cor);font-size:1rem;font-weight:600;font-style:italic;
+}
+
+/* ── PROJECTS ── */
+#projects{background:var(--obs3)}
+.proj-editorial{display:flex;flex-direction:column;gap:1px;background:var(--gb)}
+
+.proj-spread{
+  display:grid;grid-template-columns:1fr 1fr;
+  background:var(--obs3);
+  opacity:0;transform:translateY(30px) scale(0.99);
+  transition:opacity 0.7s,transform 0.7s;
+}
+.proj-spread.vis{opacity:1;transform:translateY(0) scale(1)}
+.proj-spread:nth-child(even) .proj-spread-l{order:2}
+.proj-spread:nth-child(even) .proj-spread-r{order:1}
+
+.proj-spread-l{
+  padding:3.5rem;border-right:1px solid var(--gb);
+  display:flex;flex-direction:column;justify-content:space-between;
+  position:relative;overflow:hidden;
+  background:var(--glass3);
+  transition:background 0.4s;
+}
+.proj-spread:hover .proj-spread-l{background:var(--glass)}
+/* Accent top border per project */
+.proj-spread-l::before{content:'';position:absolute;top:0;left:0;right:0;height:1px}
+.p-accent-rose .proj-spread-l::before{background:linear-gradient(90deg,transparent,var(--rose),transparent)}
+.p-accent-jade .proj-spread-l::before{background:linear-gradient(90deg,transparent,var(--jade),transparent)}
+.p-accent-gold .proj-spread-l::before{background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.p-accent-indigo .proj-spread-l::before{background:linear-gradient(90deg,transparent,var(--indigo),transparent)}
+
+.psl-index{
+  font-family:var(--inc);font-size:0.58rem;
+  color:var(--silk4);letter-spacing:0.18em;text-transform:uppercase;
+  margin-bottom:1.5rem;
+}
+.psl-title{
+  font-family:var(--cor);
+  font-size:clamp(1.6rem,2.5vw,2.2rem);
+  font-weight:600;color:var(--silk);
+  line-height:1.1;margin-bottom:0.8rem;
+}
+.p-accent-rose .psl-title em{color:var(--rose2)}
+.p-accent-jade .psl-title em{color:var(--jade2)}
+.p-accent-gold .psl-title em{color:var(--gold2)}
+.p-accent-indigo .psl-title em{color:var(--indigo2)}
+
+.psl-tagline{
+  font-family:var(--raj);font-size:0.82rem;font-weight:300;
+  color:var(--silk4);line-height:1.6;margin-bottom:1.8rem;
+}
+.psl-tools{display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:2rem}
+.ptool-pill{
+  font-family:var(--inc);font-size:0.6rem;
+  color:var(--silk3);border:1px solid var(--gb);
+  padding:0.25rem 0.7rem;border-radius:100px;letter-spacing:0.06em;
+  transition:color 0.2s,border-color 0.2s;
+}
+.proj-spread:hover .ptool-pill{color:var(--silk2);border-color:var(--gb2)}
+
+.psl-metrics{display:flex;gap:2rem}
+.psm{text-align:center}
+.psm-num{
+  font-family:var(--cor);font-size:2.2rem;font-weight:700;
+  display:block;line-height:1;
+}
+.p-accent-rose .psm-num{color:var(--rose2)}
+.p-accent-jade .psm-num{color:var(--jade2)}
+.p-accent-gold .psm-num{color:var(--gold2)}
+.p-accent-indigo .psm-num{color:var(--indigo2)}
+.psm-label{
+  font-family:var(--inc);font-size:0.56rem;
+  color:var(--silk4);letter-spacing:0.1em;text-transform:uppercase;
+  margin-top:0.3rem;
+}
+.proj-view-link{
+  display:inline-flex;align-items:center;gap:0.5rem;
+  margin-top:1.5rem;
+  font-family:var(--raj);font-size:0.7rem;font-weight:600;
+  letter-spacing:0.12em;text-transform:uppercase;
+  color:var(--silk2);text-decoration:none;
+  border-bottom:1px solid var(--gb2);
+  padding-bottom:2px;
+  transition:color 0.2s,border-color 0.2s;
+  width:fit-content;
+}
+.proj-view-link:hover{color:var(--silk);border-color:var(--silk)}
+
+.proj-spread-r{padding:3.5rem;display:flex;flex-direction:column;gap:2rem}
+.psr-section{}
+.psr-label{
+  font-family:var(--inc);font-size:0.58rem;
+  color:var(--silk4);letter-spacing:0.18em;text-transform:uppercase;
+  margin-bottom:0.9rem;padding-bottom:0.6rem;
+  border-bottom:1px solid var(--gb);
+}
+.psr-text{
+  font-family:var(--raj);font-size:0.88rem;font-weight:300;
+  color:var(--silk3);line-height:1.75;
+}
+.psr-list{list-style:none;display:flex;flex-direction:column;gap:0.55rem}
+.psr-list li{
+  display:flex;gap:0.8rem;
+  font-family:var(--raj);font-size:0.85rem;font-weight:300;
+  color:var(--silk3);line-height:1.6;
+}
+.psr-list li::before{
+  content:'—';color:var(--silk4);flex-shrink:0;
+  font-family:var(--cor);
+}
+.psr-list li strong{color:var(--silk2);font-weight:500}
+
+/* ── CERTIFICATIONS ── */
+#certifications{background:linear-gradient(180deg,var(--obs3) 0%,var(--obs4) 100%)}
+.cert-grid-final{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  background:var(--gb);
+  opacity:0;transform:translateY(30px);
+  transition:opacity 0.8s,transform 0.8s;
+}
+.cert-grid-final.vis{opacity:1;transform:translateY(0)}
+.cert-glass-card{
+  background:var(--obs4);
+  padding:2.5rem 2rem;
+  display:flex;flex-direction:column;
+  position:relative;overflow:hidden;
+  transition:background 0.4s;
+}
+.cert-glass-card:hover{background:var(--obs3)}
+.cert-glass-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--gb2),transparent);
+}
+.cgc-num{
+  font-family:var(--cor);font-size:3.5rem;font-weight:300;
+  color:var(--gb);line-height:1;font-style:italic;
+  margin-bottom:0.5rem;
+  transition:color 0.3s;
+}
+.cert-glass-card:hover .cgc-num{color:var(--gb2)}
+.cgc-icon{font-size:1.5rem;margin-bottom:1rem;display:block}
+.cgc-name{
+  font-family:var(--cor);font-size:1.05rem;font-weight:600;
+  color:var(--silk);line-height:1.3;margin-bottom:0.4rem;flex:1;
+}
+.cgc-org{
+  font-family:var(--inc);font-size:0.58rem;
+  color:var(--silk4);letter-spacing:0.12em;text-transform:uppercase;
+  margin-bottom:1.2rem;
+}
+.cgc-view-btn{
+  display:inline-flex;align-items:center;gap:0.5rem;
+  padding:0.5rem 1rem;
+  background:var(--glass);border:1px solid var(--gb2);
+  border-radius:100px;
+  font-family:var(--raj);font-size:0.65rem;font-weight:600;
+  letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--silk3);text-decoration:none;
+  transition:background 0.2s,color 0.2s,border-color 0.2s;
+  width:fit-content;
+}
+.cgc-view-btn:hover{background:var(--glass2);color:var(--silk);border-color:var(--gb2)}
+
+/* ── CONTACT ── */
+#contact{
+  background:var(--obs4);
+  padding:9rem 4rem;
+  position:relative;overflow:hidden;
+}
+.contact-glow{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:700px;height:500px;
+  background:radial-gradient(ellipse,rgba(200,160,138,0.07) 0%,rgba(122,184,160,0.05) 40%,transparent 70%);
+  pointer-events:none;
+  animation:contactPulse 8s ease-in-out infinite alternate;
+}
+@keyframes contactPulse{from{opacity:0.5;transform:translate(-50%,-50%) scale(0.95)}to{opacity:1;transform:translate(-50%,-50%) scale(1.05)}}
+
+.contact-center{max-width:760px;margin:0 auto;text-align:center;position:relative;z-index:1}
+.contact-small{
+  font-family:var(--inc);font-size:0.6rem;
+  color:var(--rose2);letter-spacing:0.25em;text-transform:uppercase;
+  margin-bottom:1.5rem;display:block;
+}
+.contact-headline{
+  font-family:var(--cor);
+  font-size:clamp(3rem,7vw,6rem);
+  font-weight:300;
+  line-height:0.95;letter-spacing:-0.02em;
+  color:var(--silk);margin-bottom:1.5rem;
+}
+.contact-headline em{font-style:italic;color:var(--silk2)}
+.contact-headline strong{font-weight:700}
+
+.contact-body{
+  font-family:var(--raj);font-size:0.95rem;font-weight:300;
+  color:var(--silk3);line-height:1.8;
+  max-width:560px;margin:0 auto 3rem;
+}
+.contact-body strong{color:var(--silk2);font-weight:500}
+
+.contact-info-strip{
+  display:flex;justify-content:center;gap:3rem;
+  flex-wrap:wrap;margin-bottom:3rem;
+  padding:2rem 3rem;
+  background:var(--glass);border:1px solid var(--gb);
+  backdrop-filter:var(--blur);
+}
+.cis-item{display:flex;flex-direction:column;gap:0.3rem;text-align:center;text-decoration:none;transition:opacity 0.2s}
+.cis-item:hover{opacity:0.7}
+.cis-icon{font-size:1.2rem;display:block;margin-bottom:0.3rem}
+.cis-label{font-family:var(--inc);font-size:0.55rem;color:var(--silk4);letter-spacing:0.15em;text-transform:uppercase}
+.cis-val{font-family:var(--raj);font-size:0.85rem;color:var(--silk2);font-weight:500}
+
+.contact-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:3rem}
+
+.contact-closing{
+  border-top:1px solid var(--gb);
+  padding-top:2.5rem;
+  font-family:var(--cor);font-size:1.1rem;font-weight:300;
+  color:var(--silk3);line-height:1.9;font-style:italic;
+}
+.contact-closing strong{color:var(--silk2);font-weight:500;font-style:normal}
+.contact-closing em{color:var(--rose2)}
+
+/* ── FOOTER ── */
+footer{
+  background:var(--obs);
+  border-top:1px solid var(--gb);
+  padding:1.5rem 4rem;
+  display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:1rem;z-index:2;position:relative;
+}
+.footer-sig{font-family:var(--cor);font-size:1rem;font-style:italic;color:var(--silk2);font-weight:300}
+.footer-copy{font-family:var(--inc);font-size:0.58rem;color:var(--silk4);letter-spacing:0.1em}
+.footer-ats{font-family:var(--inc);font-size:0.52rem;color:var(--silk4);letter-spacing:0.06em;opacity:0.4;max-width:480px;text-align:right;line-height:1.9}
+
+/* ── SCROLL REVEAL ── */
+.reveal{opacity:0;transform:translateY(30px);transition:opacity 0.8s cubic-bezier(.4,0,.2,1),transform 0.8s cubic-bezier(.4,0,.2,1)}
+.reveal.vis{opacity:1;transform:translateY(0)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1024px){
+  #hero{grid-template-columns:1fr}
+  .hero-r{display:none}
+  .hero-l{padding:9rem 3rem 5rem}
+  .about-layout{grid-template-columns:1fr}
+  .skills-weave{grid-template-columns:1fr 1fr}
+  .exp-composition{grid-template-columns:1fr}
+  .exp-left-col{border-right:none;border-bottom:1px solid var(--gb)}
+  .proj-spread{grid-template-columns:1fr}
+  .proj-spread:nth-child(even) .proj-spread-l,.proj-spread:nth-child(even) .proj-spread-r{order:unset}
+  .proj-spread-l,.proj-spread-r{border-right:none!important}
+  .cert-grid-final{grid-template-columns:1fr 1fr}
+  nav{padding:1rem 2rem}
+  nav ul{display:none}
+  .container{padding:0 2rem}
+  #contact{padding:6rem 2rem}
+  footer{padding:1.5rem 2rem}
+}
+@media(max-width:600px){
+  .skills-weave{grid-template-columns:1fr}
+  .cert-grid-final{grid-template-columns:1fr 1fr}
+  .contact-info-strip{gap:1.5rem;padding:1.5rem}
+  .hero-name{font-size:3.5rem}
+}
+</style>
+</head>
+<body>
+
+<!-- FLUID MESH CANVAS -->
+<canvas id="meshCanvas"></canvas>
+
+<!-- MAGNETIC CURSOR -->
+<div class="mag-cursor" id="magCur"></div>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <a href="#hero" class="nav-sig">
+    <div class="nav-sig-name">MD Kaif Khan</div>
+    <div class="nav-sig-role">Data Analyst · 2025</div>
+  </a>
+  <ul>
+    <li><a href="#about" class="nav-lnk">About</a></li>
+    <li><a href="#skills" class="nav-lnk">Skills</a></li>
+    <li><a href="#experience" class="nav-lnk">Experience</a></li>
+    <li><a href="#projects" class="nav-lnk">Projects</a></li>
+    <li><a href="#contact" class="nav-hire-btn">Hire Me</a></li>
+  </ul>
+  <div class="nav-avail"><div class="nav-avail-dot"></div>Open to Work</div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-blob hb1"></div>
+  <div class="hero-blob hb2"></div>
+  <div class="hero-blob hb3"></div>
+
+  <!-- LEFT -->
+  <div class="hero-l">
+    <div class="hero-eyebrow">
+      <div class="eyebrow-rule"></div>
+      B.Tech Data Science · 2025 · Noida, India
+      <div class="eyebrow-rule"></div>
+    </div>
+    <h1 class="hero-name">
+      <span class="hero-name-italic">MD Kaif</span><br>
+      <span class="hero-name-bold">Khan</span>
+    </h1>
+    <div class="hero-subtitle">
+      Data Analyst
+      <div class="sub-rule"></div>
+    </div>
+    <p class="hero-desc">
+      I transform <strong>raw, chaotic datasets</strong> into dashboards that shift how teams think and decide. <em>Six months of real industry experience</em> at SO Infotech — cleaning, modeling, visualizing, and automating data that mattered.
+    </p>
+    <div class="hero-ctas">
+      <a href="#projects" class="cta-primary">View My Work ↓</a>
+      <a href="#contact" class="cta-ghost">Get In Touch</a>
+    </div>
+    <div class="hero-contact">
+      <a href="mailto:khanmdkaif090@gmail.com" class="hc-item">
+        <span class="hci-label">Email</span>
+        <span class="hci-val">khanmdkaif090@gmail.com</span>
+      </a>
+      <a href="tel:+917033473278" class="hc-item">
+        <span class="hci-label">Phone</span>
+        <span class="hci-val">+91 7033473278</span>
+      </a>
+      <a href="https://linkedin.com/in/mdkaifkhan" target="_blank" class="hc-item">
+        <span class="hci-label">LinkedIn</span>
+        <span class="hci-val">mdkaifkhan ↗</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="hero-r">
+    <div class="hero-data-cards">
+      <div class="hdc">
+        <div>
+          <div class="hdc-label">Industry Experience</div>
+          <div class="hdc-val">SO Infotech Pvt. Ltd. · Noida</div>
+        </div>
+        <div class="hdc-num">6<span class="hdc-num-unit">mo</span></div>
+        <div class="hdc-bar"><div class="hdc-bar-fill" style="width:50%;background:var(--rose)"></div></div>
+      </div>
+      <div class="hdc">
+        <div>
+          <div class="hdc-label">Reporting Efficiency Gained</div>
+          <div class="hdc-val">Via Python automation scripts</div>
+        </div>
+        <div class="hdc-num">30<span class="hdc-num-unit">%</span></div>
+        <div class="hdc-bar"><div class="hdc-bar-fill" style="width:30%;background:var(--jade)"></div></div>
+      </div>
+      <div class="hdc">
+        <div>
+          <div class="hdc-label">Faster Trend Identification</div>
+          <div class="hdc-val">Via interactive Power BI dashboards</div>
+        </div>
+        <div class="hdc-num">40<span class="hdc-num-unit">%</span></div>
+        <div class="hdc-bar"><div class="hdc-bar-fill" style="width:40%;background:var(--gold)"></div></div>
+      </div>
+      <div class="hdc">
+        <div>
+          <div class="hdc-label">Customer Records Analyzed</div>
+          <div class="hdc-val">E-commerce churn dashboard</div>
+        </div>
+        <div class="hdc-num">5K<span class="hdc-num-unit">+</span></div>
+        <div class="hdc-bar"><div class="hdc-bar-fill" style="width:65%;background:var(--indigo)"></div></div>
+      </div>
+      <div class="hdc">
+        <div>
+          <div class="hdc-label">Projects Shipped</div>
+          <div class="hdc-val">Power BI · Python · SQL · OpenCV</div>
+        </div>
+        <div class="hdc-num">4<span class="hdc-num-unit">+</span></div>
+        <div class="hdc-bar"><div class="hdc-bar-fill" style="width:55%;background:var(--rose)"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="section-pad">
+  <div class="container">
+    <div class="ink-header">
+      <div class="ih-num">01</div>
+      <div class="ih-content">
+        <div class="ih-label">// About Me</div>
+        <div class="ih-title">The <em>Analyst</em></div>
+        <div class="ih-rule"></div>
+        <div class="ih-sub">Who is MD Kaif Khan?</div>
+      </div>
+    </div>
+    <div class="about-layout">
+      <div class="about-prose">
+        <p>I graduated with a <strong>B.Tech in Data Science in 2025</strong>, but the education that matters happened across six months working with data that was messy, real, and consequential. At SO Infotech Pvt. Ltd. in Noida, I wasn't completing assignments — I was solving <em>actual business problems</em>.</p>
+        <p>My latest work — an <strong>E-Commerce Customer Churn Analysis Dashboard</strong> — analyzed 5,000+ customer records to surface who was leaving, why, how much revenue was at risk, and exactly what retention actions would help. That's the kind of analysis that moves the needle.</p>
+        <p>I'm fluent in <strong>Power BI, SQL, Python, and Excel</strong> — not just technically, but in the way that earns trust from business teams: I translate data complexity into plain, confident decisions. I'm now looking for a full-time role across <em>India or the GCC region</em>.</p>
+      </div>
+      <div>
+        <div class="profile-panel glass-panel">
+          <div class="pp-row"><span class="pp-key">Education</span><span class="pp-val">B.Tech · CSE (Data Science)</span></div>
+          <div class="pp-row"><span class="pp-key">Institute</span><span class="pp-val">MIT Meerut · 2025</span></div>
+          <div class="pp-row"><span class="pp-key">Last Role</span><span class="pp-val">Data Analyst Intern</span></div>
+          <div class="pp-row"><span class="pp-key">Company</span><span class="pp-val glow-rose">SO Infotech Pvt. Ltd.</span></div>
+          <div class="pp-row"><span class="pp-key">Duration</span><span class="pp-val">Oct 2024 – Apr 2025</span></div>
+          <div class="pp-row"><span class="pp-key">Based In</span><span class="pp-val">Noida, India</span></div>
+          <div class="pp-row"><span class="pp-key">Target Markets</span><span class="pp-val">India · UAE · KSA · Qatar</span></div>
+          <div class="pp-row"><span class="pp-key">Availability</span><span class="pp-val glow-jade">Immediate Joiner</span></div>
+          <div class="pp-row"><span class="pp-key">Status</span><span class="pp-val glow-gold">● Actively Seeking</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills" class="section-pad">
+  <div class="container">
+    <div class="ink-header">
+      <div class="ih-num">02</div>
+      <div class="ih-content">
+        <div class="ih-label">// Capabilities</div>
+        <div class="ih-title">Skill <em>Matrix</em></div>
+        <div class="ih-rule"></div>
+        <div class="ih-sub">Tools from real projects — not a list of buzzwords</div>
+      </div>
+    </div>
+    <div class="skills-weave">
+      <div class="sw-cell">
+        <span class="sw-icon">📊</span>
+        <div class="sw-title">Business Intelligence</div>
+        <div class="sw-rule sr-rose"></div>
+        <div class="sw-items">
+          <div class="sw-item"><span>Power BI</span><div class="sw-pips"><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div></div></div>
+          <div class="sw-item"><span>DAX</span><div class="sw-pips"><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip"></div></div></div>
+          <div class="sw-item"><span>Power Query</span><div class="sw-pips"><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip"></div></div></div>
+          <div class="sw-item"><span>Data Modelling</span><div class="sw-pips"><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip"></div></div></div>
+          <div class="sw-item"><span>KPI Dashboards</span><div class="sw-pips"><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div></div></div>
+          <div class="sw-item"><span>Forecasting</span><div class="sw-pips"><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip"></div><div class="pip"></div></div></div>
+        </div>
+      </div>
+      <div class="sw-cell">
+        <span class="sw-icon">🐍</span>
+        <div class="sw-title">Python Analytics</div>
+        <div class="sw-rule sr-jade"></div>
+        <div class="sw-items">
+          <div class="sw-item"><span>Python</span><div class="sw-pips"><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip"></div></div></div>
+          <div class="sw-item"><span>Pandas</span><div class="sw-pips"><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div></div></div>
+          <div class="sw-item"><span>NumPy</span><div class="sw-pips"><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip"></div><div class="pip"></div></div></div>
+          <div class="sw-item"><span>Matplotlib</span><div class="sw-pips"><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip"></div><div class="pip"></div></div></div>
+          <div class="sw-item"><span>Seaborn</span><div class="sw-pips"><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip"></div><div class="pip"></div></div></div>
+          <div class="sw-item"><span>Automation</span><div class="sw-pips"><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip"></div></div></div>
+        </div>
+      </div>
+      <div class="sw-cell">
+        <span class="sw-icon">🗄️</span>
+        <div class="sw-title">SQL & Databases</div>
+        <div class="sw-rule sr-gold"></div>
+        <div class="sw-items">
+          <div class="sw-item"><span>SQL</span><div class="sw-pips"><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip"></div></div></div>
+          <div class="sw-item"><span>MySQL</span><div class="sw-pips"><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip"></div></div></div>
+          <div class="sw-item"><span>Joins & Subqueries</span><div class="sw-pips"><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip"></div></div></div>
+          <div class="sw-item"><span>Window Functions</span><div class="sw-pips"><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip"></div><div class="pip"></div></div></div>
+          <div class="sw-item"><span>Aggregations</span><div class="sw-pips"><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip"></div></div></div>
+        </div>
+      </div>
+      <div class="sw-cell">
+        <span class="sw-icon">📉</span>
+        <div class="sw-title">Excel</div>
+        <div class="sw-rule sr-indigo"></div>
+        <div class="sw-items">
+          <div class="sw-item"><span>Excel</span><div class="sw-pips"><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div></div></div>
+          <div class="sw-item"><span>Pivot Tables</span><div class="sw-pips"><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip"></div></div></div>
+          <div class="sw-item"><span>VLOOKUP / XLOOKUP</span><div class="sw-pips"><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div></div></div>
+          <div class="sw-item"><span>Cond. Formatting</span><div class="sw-pips"><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip"></div></div></div>
+          <div class="sw-item"><span>Charts & Visuals</span><div class="sw-pips"><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip"></div></div></div>
+        </div>
+      </div>
+      <div class="sw-cell">
+        <span class="sw-icon">🧠</span>
+        <div class="sw-title">Analysis Methods</div>
+        <div class="sw-rule sr-rose"></div>
+        <div class="sw-items">
+          <div class="sw-item"><span>EDA</span><div class="sw-pips"><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip"></div></div></div>
+          <div class="sw-item"><span>Data Cleaning</span><div class="sw-pips"><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div></div></div>
+          <div class="sw-item"><span>Churn Analysis</span><div class="sw-pips"><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip"></div></div></div>
+          <div class="sw-item"><span>Statistical Analysis</span><div class="sw-pips"><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip"></div><div class="pip"></div></div></div>
+          <div class="sw-item"><span>Data Wrangling</span><div class="sw-pips"><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip"></div></div></div>
+        </div>
+      </div>
+      <div class="sw-cell">
+        <span class="sw-icon">🤝</span>
+        <div class="sw-title">Professional</div>
+        <div class="sw-rule sr-jade"></div>
+        <div class="sw-items">
+          <div class="sw-item"><span>Data Storytelling</span><div class="sw-pips"><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip"></div></div></div>
+          <div class="sw-item"><span>Stakeholder Reports</span><div class="sw-pips"><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip"></div></div></div>
+          <div class="sw-item"><span>Problem Solving</span><div class="sw-pips"><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div></div></div>
+          <div class="sw-item"><span>Analytical Thinking</span><div class="sw-pips"><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div></div></div>
+          <div class="sw-item"><span>Communication</span><div class="sw-pips"><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip"></div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience" class="section-pad">
+  <div class="container">
+    <div class="ink-header">
+      <div class="ih-num">03</div>
+      <div class="ih-content">
+        <div class="ih-label">// Work History</div>
+        <div class="ih-title">Where I <em>Grew</em></div>
+        <div class="ih-rule"></div>
+        <div class="ih-sub">Six months of real business data — not textbook problems</div>
+      </div>
+    </div>
+    <div class="exp-composition">
+      <div class="exp-left-col">
+        <div>
+          <div class="elc-section-label">Company</div>
+          <div class="elc-company">SO Infotech<br>Pvt. Ltd.</div>
+          <div class="elc-role">Data Analyst Intern</div>
+        </div>
+        <div>
+          <div class="elc-section-label">Period</div>
+          <div class="elc-badge">Oct 2024 – Apr 2025 · Noida</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.8rem">
+          <div class="elc-metric"><span class="em-num">30%</span><div class="em-lbl">Efficiency Gain</div></div>
+          <div class="elc-metric"><span class="em-num">40%</span><div class="em-lbl">Faster Insights</div></div>
+        </div>
+        <div>
+          <div class="elc-section-label">Stack</div>
+          <div class="elc-tags">
+            <span class="etag">Python</span><span class="etag">SQL</span><span class="etag">Power BI</span><span class="etag">Excel</span><span class="etag">Pandas</span><span class="etag">DAX</span><span class="etag">Power Query</span>
+          </div>
+        </div>
+      </div>
+      <div class="exp-right-col">
+        <div class="exp-timeline">
+          <div class="et-item"><div class="et-num">1</div><div class="et-content"><div class="et-text">Collected, cleaned and preprocessed real-world datasets using <strong>Python (Pandas)</strong> and <strong>SQL</strong>, ensuring data quality and consistency for business analysis pipelines.</div></div></div>
+          <div class="et-item"><div class="et-num">2</div><div class="et-content"><div class="et-text">Performed comprehensive <strong>Exploratory Data Analysis (EDA)</strong> to surface hidden trends, anomalies and patterns — delivered actionable insights to internal product and operations teams.</div></div></div>
+          <div class="et-item"><div class="et-num">3</div><div class="et-content"><div class="et-text">Designed <strong>interactive Power BI dashboards</strong> tracking monthly sales performance, KPIs and customer behaviour — enabling faster, data-driven decisions across departments.</div></div></div>
+          <div class="et-item"><div class="et-num">4</div><div class="et-content"><div class="et-text">Automated weekly reporting workflows with Python scripts — reduced manual effort by <span class="highlight">30%</span>, freeing the team for higher-value analytical work.</div></div></div>
+          <div class="et-item"><div class="et-num">5</div><div class="et-content"><div class="et-text">Wrote optimized <strong>SQL queries</strong> (joins, subqueries, window functions) to extract and aggregate data from relational databases for ad-hoc business reporting.</div></div></div>
+          <div class="et-item"><div class="et-num">6</div><div class="et-content"><div class="et-text">Presented findings to <strong>stakeholders</strong>, translating complex data analysis into plain, confident business narratives to support strategic decision-making.</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects" class="section-pad">
+  <div class="container">
+    <div class="ink-header">
+      <div class="ih-num">04</div>
+      <div class="ih-content">
+        <div class="ih-label">// Case Studies</div>
+        <div class="ih-title">The <em>Work</em></div>
+        <div class="ih-rule"></div>
+        <div class="ih-sub">End-to-end analytics with measurable business impact</div>
+      </div>
+    </div>
+  </div>
+  <div class="proj-editorial">
+
+    <!-- P1: Churn -->
+    <div class="proj-spread p-accent-rose">
+      <div class="proj-spread-l">
+        <div>
+          <div class="psl-index">// Project 01 · May 2026 · Featured</div>
+          <div class="psl-title">E-Commerce<br><em>Customer Churn</em><br>Analysis Dashboard</div>
+          <div class="psl-tagline">Analyzing 5,000+ customer records to surface attrition patterns, revenue risk, and high-impact retention strategies using Power BI.</div>
+          <div class="psl-tools">
+            <span class="ptool-pill">Power BI</span><span class="ptool-pill">SQL</span><span class="ptool-pill">DAX</span><span class="ptool-pill">Data Modelling</span><span class="ptool-pill">Churn Analysis</span>
+          </div>
+        </div>
+        <div>
+          <div class="psl-metrics">
+            <div class="psm"><span class="psm-num">5K+</span><div class="psm-label">Records</div></div>
+            <div class="psm"><span class="psm-num">4</span><div class="psm-label">Dashboard Pages</div></div>
+            <div class="psm"><span class="psm-num">8+</span><div class="psm-label">DAX Measures</div></div>
+          </div>
+          <a href="https://github.com/MdKaifkhan090/churn-analysis" target="_blank" class="proj-view-link">View Project ↗</a>
+        </div>
+      </div>
+      <div class="proj-spread-r">
+        <div class="psr-section">
+          <div class="psr-label">Problem Statement</div>
+          <p class="psr-text">An e-commerce business was losing customers without understanding the pattern. Revenue was declining, but no visibility existed into who was at risk, what was driving churn, or how to act proactively.</p>
+        </div>
+        <div class="psr-section">
+          <div class="psr-label">Key Deliverables</div>
+          <ul class="psr-list">
+            <li>KPI pages: executive overview, customer behaviour, revenue intelligence & churn risk prediction</li>
+            <li><strong>DAX measures</strong> for churn rate, revenue lost, average spend & customer risk categories</li>
+            <li>Churn segmentation by inactivity, satisfaction level, membership type & spending behaviour</li>
+            <li>Retention strategy visuals — reminder emails, loyalty rewards & targeted discount recommendations</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- P2: Superstore -->
+    <div class="proj-spread p-accent-jade">
+      <div class="proj-spread-l">
+        <div>
+          <div class="psl-index">// Project 02 · Apr–May 2025</div>
+          <div class="psl-title">Superstore Sales<br>Analysis &<br><em>Forecasting</em></div>
+          <div class="psl-tagline">Retail analytics dashboard uncovering profit drivers, regional performance gaps, and demand signals using Power BI + SQL.</div>
+          <div class="psl-tools">
+            <span class="ptool-pill">Power BI</span><span class="ptool-pill">SQL</span><span class="ptool-pill">Excel</span><span class="ptool-pill">DAX</span><span class="ptool-pill">Power Query</span>
+          </div>
+        </div>
+        <div>
+          <div class="psl-metrics">
+            <div class="psm"><span class="psm-num">40%</span><div class="psm-label">Faster Trends</div></div>
+            <div class="psm"><span class="psm-num">25%</span><div class="psm-label">Prep Time ↓</div></div>
+            <div class="psm"><span class="psm-num">30%</span><div class="psm-label">Better Decisions</div></div>
+          </div>
+          <a href="https://github.com/MdKaifkhan090/Sales-Analysis" target="_blank" class="proj-view-link">View Project ↗</a>
+        </div>
+      </div>
+      <div class="proj-spread-r">
+        <div class="psr-section">
+          <div class="psr-label">Key Insights Uncovered</div>
+          <ul class="psr-list">
+            <li>Technology category drove 36% of revenue but had the <strong>lowest profit margin</strong> — a pricing problem hiding in plain sight</li>
+            <li>Top 20% of customers contributed 68% of total profit — Pareto pattern flagged for loyalty strategy</li>
+            <li>West region had 18% higher return rates despite leading in volume — fulfilment issue identified</li>
+            <li>Q4 seasonality modelled with forecasting module for proactive inventory planning</li>
+          </ul>
+        </div>
+        <div class="psr-section">
+          <div class="psr-label">Technical Process</div>
+          <ul class="psr-list">
+            <li>Power Query for null removal, date format standardization & deduplication</li>
+            <li>Star schema data model connecting orders, customers, products & geography</li>
+            <li>DAX: YTD revenue, profit margin %, MoM growth & return rate measures</li>
+            <li>3-page interactive dashboard with slicers, drill-through & conditional formatting</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- P3: IPL -->
+    <div class="proj-spread p-accent-gold">
+      <div class="proj-spread-l">
+        <div>
+          <div class="psl-index">// Project 03 · Jan–Feb 2025</div>
+          <div class="psl-title">IPL Multi-Season<br><em>Performance</em><br>Analytics</div>
+          <div class="psl-tagline">Star-schema data model powering multi-audience dashboards for fans, analysts, and team managers across 5+ IPL seasons.</div>
+          <div class="psl-tools">
+            <span class="ptool-pill">Power BI</span><span class="ptool-pill">SQL</span><span class="ptool-pill">DAX</span><span class="ptool-pill">Data Modelling</span>
+          </div>
+        </div>
+        <div>
+          <div class="psl-metrics">
+            <div class="psm"><span class="psm-num">30%</span><div class="psm-label">Load Time ↓</div></div>
+            <div class="psm"><span class="psm-num">5+</span><div class="psm-label">Seasons</div></div>
+            <div class="psm"><span class="psm-num">3×</span><div class="psm-label">Audiences</div></div>
+          </div>
+          <a href="https://github.com/MdKaifkhan090/IPL-ANALYSIS" target="_blank" class="proj-view-link">View Project ↗</a>
+        </div>
+      </div>
+      <div class="proj-spread-r">
+        <div class="psr-section">
+          <div class="psr-label">Key Insights</div>
+          <ul class="psr-list">
+            <li>Toss winners fielded first 74% of the time — won those matches at a 61% rate</li>
+            <li><strong>Powerplay performance</strong> was the single strongest predictor of match outcome</li>
+            <li>Built composite "impact player" index across runs, wickets & fielding performance</li>
+            <li>Venue scoring patterns surfaced consistent team strategy influences</li>
+          </ul>
+        </div>
+        <div class="psr-section">
+          <div class="psr-label">Technical Highlights</div>
+          <ul class="psr-list">
+            <li>Star schema: fact_matches linked to dim_players, dim_venues, dim_teams</li>
+            <li>DAX refactoring reduced report load time by 30% vs initial version</li>
+            <li>Multi-audience views: fan leaderboards + analyst heatmaps & comparisons</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- P4: Object Tracking -->
+    <div class="proj-spread p-accent-indigo">
+      <div class="proj-spread-l">
+        <div>
+          <div class="psl-index">// Project 04 · Jun–Jul 2024</div>
+          <div class="psl-title">Real-Time<br><em>Object Tracking</em><br>System</div>
+          <div class="psl-tagline">Python + OpenCV application tracking object motion in live video feeds at 30fps via HSV filtering & contour detection.</div>
+          <div class="psl-tools">
+            <span class="ptool-pill">Python</span><span class="ptool-pill">OpenCV</span><span class="ptool-pill">NumPy</span>
+          </div>
+        </div>
+        <div>
+         
+        </div>
+      </div>
+      <div class="proj-spread-r">
+        <div class="psr-section">
+          <div class="psr-label">What Was Built</div>
+          <p class="psr-text">Real-time object tracking using HSV color filtering, contour detection and centroid-based frame-by-frame tracking at 30fps in live video. Accurate motion tracking in performance-critical conditions.</p>
+        </div>
+        <div class="psr-section">
+          <div class="psr-label">Why It Matters for Data Work</div>
+          <p class="psr-text">This project sharpened Python proficiency in data-intensive, performance-critical environments — the same mindset applied to Pandas pipelines, real-time reporting systems and streaming data workflows.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CERTIFICATIONS -->
+<section id="certifications" class="section-pad">
+  <div class="container">
+    <div class="ink-header">
+      <div class="ih-num">05</div>
+      <div class="ih-content">
+        <div class="ih-label">// Credentials</div>
+        <div class="ih-title">Verified <em>Expertise</em></div>
+        <div class="ih-rule"></div>
+        <div class="ih-sub">Industry-recognized certifications that validate the skills</div>
+      </div>
+    </div>
+    <div class="cert-grid-final">
+      <div class="cert-glass-card">
+        <div class="cgc-num">01</div>
+        <span class="cgc-icon">🏆</span>
+        <div class="cgc-name">Data Analytics Job Simulation</div>
+        <div class="cgc-org">Deloitte · Forage · Sep 2025</div>
+        <a href="https://drive.google.com/file/d/1vzuIkdoY5DfnGZXtJCZF7T8XezUF1Zln/view?usp=sharing" target="_blank" class="cgc-view-btn">View Credential ↗</a>
+      </div>
+      <div class="cert-glass-card">
+        <div class="cgc-num">02</div>
+        <span class="cgc-icon">🐍</span>
+        <div class="cgc-name">Python Certification</div>
+        <div class="cgc-org">HackerRank</div>
+        <a href="https://www.hackerrank.com/certificates/8fee4bbc9acb" target="_blank" class="cgc-view-btn">View Credential ↗</a>
+      </div>
+      <div class="cert-glass-card">
+        <div class="cgc-num">03</div>
+        <span class="cgc-icon">🎓</span>
+        <div class="cgc-name">Python for Data Science</div>
+        <div class="cgc-org">IBM SkillsBuild</div>
+      
+      </div>
+      <div class="cert-glass-card">
+        <div class="cgc-num">04</div>
+        <span class="cgc-icon">📈</span>
+        <div class="cgc-name">Data Analytics</div>
+        <div class="cgc-org">DUCAT Institute</div>
+        <a href="https://drive.google.com/file/d/1yX-UeB65hfFApEBuOmB86a_uY9J7of4e/view?usp=sharing" target="_blank" class="cgc-view-btn">View Credential ↗</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-glow"></div>
+  <div class="contact-center">
+    <span class="contact-small">// Open to Opportunities</span>
+    <div class="contact-headline">
+      Let's build<br><em>something</em><br><strong>that matters.</strong>
+    </div>
+    <p class="contact-body">
+      I'm actively seeking <strong>Data Analyst roles</strong> across India and the GCC region (UAE, Saudi Arabia, Qatar). If your team needs someone who will dig into your data, find what's hiding in the numbers, and build tools that make your business <strong>decide with confidence</strong> — let's talk.
+    </p>
+    <div class="contact-info-strip">
+      <a href="mailto:khanmdkaif090@gmail.com" class="cis-item">
+        <span class="cis-icon">✉</span>
+        <span class="cis-label">Email</span>
+        <span class="cis-val">khanmdkaif090@gmail.com</span>
+      </a>
+      <a href="tel:+917033473278" class="cis-item">
+        <span class="cis-icon">☎</span>
+        <span class="cis-label">Phone</span>
+        <span class="cis-val">+91 7033473278</span>
+      </a>
+      <a href="https://linkedin.com/in/mdkaifkhan" target="_blank" class="cis-item">
+        <span class="cis-icon">↗</span>
+        <span class="cis-label">LinkedIn</span>
+        <span class="cis-val">linkedin.com/in/mdkaifkhan</span>
+      </a>
+      <div class="cis-item">
+        <span class="cis-icon">📍</span>
+        <span class="cis-label">Location</span>
+        <span class="cis-val">Noida · India & GCC</span>
+      </div>
+    </div>
+    <div class="contact-btns">
+      <a href="mailto:khanmdkaif090@gmail.com" class="cta-primary">Send Me an Email ↗</a>
+      <a href="https://linkedin.com/in/mdkaifkhan" target="_blank" class="cta-ghost">Connect on LinkedIn</a>
+    </div>
+    <div class="contact-closing">
+      "I'm not just looking for a job — I'm looking for a team where <strong>data actually drives decisions</strong>, and where I can grow into someone those decisions depend on. If that sounds like your team, <em>I'd love to hear from you.</em>"
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-sig">MD Kaif Khan</div>
+  <div class="footer-copy">© 2025 · Data Analyst Portfolio</div>
+  <div class="footer-ats">Power BI · SQL · Python · Excel · EDA · Dashboard Development · Data Visualization · Business Intelligence · KPI Tracking · Reporting Automation · Churn Analysis · Data Cleaning · Stakeholder Reporting</div>
+</footer>
+
+<script>
+// ── FLUID MESH CANVAS ──
+const mc=document.getElementById('meshCanvas');
+const mctx=mc.getContext('2d');
+let mW,mH,t=0;
+function mResize(){mW=mc.width=window.innerWidth;mH=mc.height=window.innerHeight}
+window.addEventListener('resize',mResize);mResize();
+const BLOBS=[
+  {x:0.2,y:0.3,r:0.35,c:'rgba(200,160,138,',s:0.0004,ox:0,oy:0},
+  {x:0.7,y:0.2,r:0.28,c:'rgba(122,184,160,',s:0.0006,ox:1,oy:2},
+  {x:0.5,y:0.7,r:0.32,c:'rgba(128,144,200,',s:0.0005,ox:3,oy:1},
+  {x:0.85,y:0.6,r:0.22,c:'rgba(200,168,64,',s:0.0007,ox:2,oy:3},
+];
+function drawMesh(){
+  mctx.clearRect(0,0,mW,mH);
+  t+=0.4;
+  BLOBS.forEach(b=>{
+    const x=(b.x+Math.sin(t*b.s+b.ox)*0.12)*mW;
+    const y=(b.y+Math.cos(t*b.s+b.oy)*0.1)*mH;
+    const r=b.r*Math.min(mW,mH);
+    const g=mctx.createRadialGradient(x,y,0,x,y,r);
+    g.addColorStop(0,b.c+'0.12)');
+    g.addColorStop(0.5,b.c+'0.05)');
+    g.addColorStop(1,b.c+'0)');
+    mctx.beginPath();mctx.arc(x,y,r,0,Math.PI*2);
+    mctx.fillStyle=g;mctx.fill();
+  });
+  requestAnimationFrame(drawMesh);
+}
+drawMesh();
+
+// ── MAGNETIC CURSOR ──
+const cur=document.getElementById('magCur');
+let cx=window.innerWidth/2,cy=window.innerHeight/2;
+let tx=cx,ty=cy;
+document.addEventListener('mousemove',e=>{tx=e.clientX;ty=e.clientY});
+(function animCur(){
+  cx+=(tx-cx)*0.15;cy+=(ty-cy)*0.15;
+  cur.style.left=cx+'px';cur.style.top=cy+'px';
+  requestAnimationFrame(animCur);
+})();
+// Magnetic pull on interactive elements
+document.querySelectorAll('a,button').forEach(el=>{
+  el.addEventListener('mouseenter',()=>cur.classList.add('expand'));
+  el.addEventListener('mouseleave',()=>cur.classList.remove('expand'));
+});
+document.querySelectorAll('p,li,h1,h2,h3').forEach(el=>{
+  el.addEventListener('mouseenter',()=>cur.classList.add('text-mode'));
+  el.addEventListener('mouseleave',()=>cur.classList.remove('text-mode'));
+});
+
+// ── INTERSECTION OBSERVER ──
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('vis')});
+},{threshold:0.07});
+document.querySelectorAll('.ink-header,.about-layout,.skills-weave,.exp-composition,.proj-spread,.cert-grid-final,.reveal').forEach(el=>obs.observe(el));
+document.querySelectorAll('.proj-spread').forEach((el,i)=>{el.style.transitionDelay=`${i*0.08}s`});
+
+// ── NAV SCROLL ──
+window.addEventListener('scroll',()=>{
+  const nav=document.getElementById('mainNav');
+  if(window.scrollY>80){nav.style.background='rgba(6,6,8,0.92)';nav.style.padding='0.9rem 4rem'}
+  else{nav.style.background='rgba(6,6,8,0.6)';nav.style.padding='1.4rem 4rem'}
+});
+
+// ── BAR FILL TRIGGER ──
+const barObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.querySelectorAll('.hdc-bar-fill').forEach(b=>{b.style.transform='scaleX(1)'});
+    }
+  });
+},{threshold:0.3});
+document.querySelectorAll('#hero').forEach(el=>barObs.observe(el));
+</script>
+</body>
+</html>
